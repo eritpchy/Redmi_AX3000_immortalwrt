@@ -159,11 +159,6 @@ jobs:
           name: bin-qualcommax-ipq50xx
           path: bin/targets/qualcommax/ipq50xx/
 
-      - name: Tar
-        run: |
-          tar cvf dl.tar -C dl/ .
-          tar cvf bin-ipq50xx.tar -C bin/targets/ipq50xx/arm/ .
-
       - name: Generate release informations
         run: |
           TIME="$(curl "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" | jq -r .created_at)"
