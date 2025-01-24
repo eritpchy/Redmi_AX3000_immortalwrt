@@ -118,7 +118,7 @@ jobs:
       - name: Download bin from artifacts
         uses: actions/download-artifact@v3
         with:
-          name: bin-ipq50xx-arm
+          name: bin-qualcommax-ipq50xx
           path: bin/
 
       - name: Copy contents
