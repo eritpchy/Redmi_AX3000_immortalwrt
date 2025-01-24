@@ -87,6 +87,57 @@ jobs:
           name: dl
           path: dl/*
 
+  gh-pages:
+    needs: [ build ]
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v3
+        with:
+          path: 'gh-pages'
+          ref: 'gh-pages'
+          fetch-depth: 0
+
+      - name: Configure the git user
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Drop old versions
+        run: |
+          cd gh-pages
+          readarray -t old_version < <(git log --format='%h' -- "${GITHUB_REF_NAME}" | tail -n +10)
+          GIT_SEQUENCE_EDITOR="sed -i '1 i break'" git rebase --interactive --committer-date-is-author-date --root
+          for commit in "${old_version[@]}"; do
+            sed -i "/${commit}/d" .git/rebase-merge/git-rebase-todo
+          done
+          git rebase --continue
+
+      - name: Download bin from artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: bin-ipq50xx-arm
+          path: bin/
+
+      - name: Copy contents
+        run: |
+          version="$(cat "bin/version.buildinfo")"
+          mkdir -p "gh-pages/${GITHUB_REF_NAME}/${version}/"
+          cp -avr bin/packages/* "gh-pages/${GITHUB_REF_NAME}/${version}/"
+
+      - name: Commit
+        run: |
+          cd gh-pages
+          git add .
+          git commit -m "Add: ${GITHUB_REF_NAME}: $(cat ../bin/version.buildinfo)"
+
+      - name: Publish
+        run: |
+          cd gh-pages
+          git push -f origin gh-pages
+          
   release:
     needs: [ build ]
     runs-on: ubuntu-20.04
@@ -107,6 +158,11 @@ jobs:
         with:
           name: bin-qualcommax-ipq50xx
           path: bin/targets/qualcommax/ipq50xx/
+
+      - name: Tar
+        run: |
+          tar cvf dl.tar -C dl/ .
+          tar cvf bin-ipq50xx.tar -C bin/targets/ipq50xx/arm/ .
 
       - name: Generate release informations
         run: |
