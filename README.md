@@ -1,6 +1,13 @@
 ImmortalWrt For Redmi AX3000
 ============================
 
+iperf3性能评测
+| 固件                                                 | 有线 | WIFI - 160Mhz | 
+| :-:                                                    | :-:  | :-:    |
+| [hzyitc-5.4-openwrt-21.02](https://github.com/hzyitc/openwrt-redmi-ax3000/tree/ipq50xx-qsdk-kernel-5.4-openwrt-21.02-qsdk-11.5.05.841.1029)                     | ~900Mbps  | <=300Mbps     | 
+| [Kwrt](https://dl.openwrt.ai/firmware/ipq50xx-arm/redmi_ax3000/09.26.2024-kwrt-ipq50xx-arm-redmi_ax3000-squashfs-nand-factory.ubi) | <= 800Mbps | <= 500Mbps | 
+| 本固件                                          | <= 700Mbps | <= 400Mbps
+
 Known issue:
 ------------
 
