@@ -1,0 +1,14 @@
+services:
+  builder:
+    build: 
+      context: ..
+      dockerfile: ./docker/Dockerfile
+      args:
+        HTTPS_PROXY: ${HTTPS_PROXY}
+        HTTP_PROXY: ${HTTP_PROXY}
+        NO_PROXY: ${NO_PROXY}
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
+    user: ${PUID:-1000}:${PGID:-1000}
+    volumes:
+      - ../:/home/builder/openwrt
